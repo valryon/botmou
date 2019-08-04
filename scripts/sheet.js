@@ -42,43 +42,64 @@ function getRows(cb) {
 
   const doc = new GoogleSpreadsheet(process.env.SHEET_TOKEN)
 
+  let rows = []
   doc.getInfo((err, info) => {
     if (err) return
 
-    // Get the first worksheet only.
-    const sheet = info.worksheets[0]
+    let sheetsCount = info.worksheets.length
 
-    // Get every row EXCEPT the first one (the headers).
-    sheet.getRows({offset: 1}, (err, rows) => {
-      if (err) return
+    info.worksheets.forEach(sheet => {
+      // Get every row EXCEPT the first one (the headers).
+      sheet.getRows({offset: 1}, (err, sheetRows) => {
+        sheetsCount--
+        if (!err && sheetRows) {
+          sheetRows.forEach(r => rows.push(r))
+          logger.info(
+            'Found ' +
+              sheetRows.length +
+              ' lines. ' +
+              sheetsCount +
+              ' sheets remaining.'
+          )
+        }
 
-      cb(
-        rows.map(row => {
-          const answers = []
-          for (const [key, value] of Object.entries(row)) {
-            if (isAnswerKey(key, value)) answers.push(value)
-          }
-
-          // Clean probability value.
-          let probability = Number(row.probability)
-          if (probability <= 0) probability = 50
-          if (probability > 100) probability = 100
-
-          const obj = {
-            regex: row.regex,
-            data: answers,
-            pause: Number(row.pause),
-            probability,
-            target: row.target + '',
-            room: row.channel,
-            isReply: convertStringToBoolean(row.reply)
-          }
-
-          return obj
-        })
-      )
+        if (sheetsCount <= 0) {
+          completeGetRows(rows, cb)
+        }
+      })
     })
   })
+}
+
+function completeGetRows(rows, cb) {
+  logger.info(
+    'Found a total of ' + rows.length + ' rows in all sheets. Parsing.'
+  )
+  cb(
+    rows.map(row => {
+      const answers = []
+      for (const [key, value] of Object.entries(row)) {
+        if (isAnswerKey(key, value)) answers.push(value)
+      }
+
+      // Clean probability value.
+      let probability = Number(row.probability)
+      if (probability <= 0) probability = 50
+      if (probability > 100) probability = 100
+
+      const obj = {
+        regex: row.regex,
+        data: answers,
+        pause: Number(row.pause),
+        probability,
+        target: row.target + '',
+        room: row.channel,
+        isReply: convertStringToBoolean(row.reply)
+      }
+
+      return obj
+    })
+  )
 }
 
 // Add the current timestamp to a parameter.
