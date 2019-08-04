@@ -141,6 +141,7 @@ But in the end, you should have at least 2 of these 3 variables configured:
 - `HUBOT_DISCORD_TOKEN`
 - `SHEET_TOKEN` (optional)
 - `CLEVERBOT_TOKEN` (optional)
+- `ANGRY_MODE` (optional. Set 0 to disable angryness.)
 
 Otherwise, this bot will be pretty useless.
 
@@ -159,8 +160,10 @@ Env-file boilerplate:
 
 ```
 HUBOT_SLACK_TOKEN=
+HUBOT_DISCORD_TOKEN=
 CLEVERBOT_TOKEN=
 SHEET_TOKEN=
+ANGRY_MODE=1
 ```
 
 ## Contributing
