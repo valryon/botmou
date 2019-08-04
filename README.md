@@ -45,7 +45,7 @@ Don't forget to set a custom name here for your bot.
 
 First, we need to create a public Google Sheet.
 
-1. [Create a copy of this Google Sheet model](https://docs.google.com/spreadsheets/d/1zBVFMGqO3jfBwEfVtEdfb9jtIWp7q036EH8G0g84HLE/).
+1. [Create a copy of this Google Sheet model](https://docs.google.com/spreadsheets/d/10Psb_c2Jgt6lUz4W3QJpZpKdWlGIH9UUtW-SM-pyVYQ/edit#gid=0).
 2. Turn on web publishing by going to "File/Publish to web".
 3. Copy the Google Sheet link with the big "Share" button on the top right of your sheet.
 
@@ -66,7 +66,7 @@ For example, if you want to try the model in your shell, type:
 
 ```shell
 # On macOS or Linux.
-env SHEET_TOKEN=1zBVFMGqO3jfBwEfVtEdfb9jtIWp7q036EH8G0g84HLE yarn start
+env SHEET_TOKEN=10Psb_c2Jgt6lUz4W3QJpZpKdWlGIH9UUtW-SM-pyVYQ yarn start
 ```
 
 **Note: be careful, the sheet is potentially visible by anyone.**

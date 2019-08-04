@@ -70,6 +70,7 @@ function getRows(cb) {
             pause: Number(row.pause),
             probability,
             target: row.target + '',
+            room: row.channel,
             isReply: convertStringToBoolean(row.reply)
           }
 
@@ -143,7 +144,7 @@ function convertStringToBoolean(val) {
 // Answer.
 // If it's a success, return true.
 // Otherwise, return false (was not the target, was blacklisted, etc.)
-function answer(row, res) {
+function answer(robot, row, res) {
   let message = res.random(row.data)
 
   // If the message is not an URL, the `try` clause will fail.
@@ -157,6 +158,22 @@ function answer(row, res) {
   // Stop if the room is blacklisted.
   const room = res.message.room
   if (isBlacklisted(room)) return false
+
+  // Check if the row is supposed to target only a specific room
+  // Ignore if "room" cell is empty
+  const rawTargetRoom = row.room
+  if (isString(rawTargetRoom)) {
+    const target = rawTargetRoom.trim().toLowerCase()
+    const roomData = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById(
+      res.message.room
+    )
+    if (roomData) {
+      const roomCleaned = roomData.name.trim().toLowerCase()
+
+      // Stop if not the right channel
+      if (target !== '' && !isEqual(target, roomCleaned)) return false
+    }
+  }
 
   // Get target and user.
   const rawTarget = row.target
@@ -180,8 +197,8 @@ function answer(row, res) {
   return true
 }
 
-function makeAnswer(row) {
-  const action = partial(answer, row)
+function makeAnswer(robot, row) {
+  const action = partial(answer, robot, row)
 
   // Stagger?
   if (row.pause && row.pause > 0) {
@@ -230,7 +247,7 @@ module.exports = robot => {
       if (!isString(row.regex)) return
       if (row.regex.trim() === '') return
 
-      const answer = makeAnswer(row)
+      const answer = makeAnswer(robot, row)
 
       robot.hear(new RegExp(row.regex, 'i'), res => picker(() => answer(res)))
     })
