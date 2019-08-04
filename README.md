@@ -69,6 +69,14 @@ For example, if you want to try the model in your shell, type:
 env SHEET_TOKEN=10Psb_c2Jgt6lUz4W3QJpZpKdWlGIH9UUtW-SM-pyVYQ yarn start
 ```
 
+```shell
+# On Window (PowerShell)
+## This may require admin privileges. Do it only once.
+[Environment]::SetEnvironmentVariable("SHEET_TOKEN", "10Psb_c2Jgt6lUz4W3QJpZpKdWlGIH9UUtW-SM-pyVYQ", "Machine")
+
+yarn start
+```
+
 **Note: be careful, the sheet is potentially visible by anyone.**
 
 ### Cleverbot
@@ -78,13 +86,36 @@ You can also use Cleverbot with your bot. You need to get a token on [cleverbot.
 Try it with:
 
 ```shell
+# On macOS or Linux.
 env CLEVERBOT_TOKEN=token yarn start
+```
 
+```shell
+# On Window (PowerShell)
+## This may require admin privileges. Do it only once.
+[Environment]::SetEnvironmentVariable("CLEVERBOT_TOKEN", token, "Machine")
+
+yarn start
+```
+
+```shell
 # In your Hubot shell, type:
 botmou: hello my dear bot!
 
 # If it's working, you should get a pseudo-intelligent answer.
 ```
+
+### Discord
+
+You'll need to create a bot on the Discord dev portal.
+
+Once created use the bot token for botmou.
+
+To add your bot to a server, open the following URL:
+
+`https://discordapp.com/oauth2/authorize?client_id=<Bot_Client_ID>&scope=bot&permissions=334912`
+
+Replace `<Bot_Client_ID>` by the bot ID you can see in the URL on the dev portal.
 
 ### Bot name
 
@@ -95,7 +126,8 @@ However, if you want to customize the name in your shell, open your `package.jso
 ```json
 "scripts": {
   "start": "hubot --name \"botmou\"",
-  "prod": "hubot --name \"botmou\" --adapter slack",
+  "slack": "hubot --name \"botmou\" --adapter slack",
+  "discord": "hubot --name \"botmou\" --adapter discord",
 },
 ```
 
@@ -105,7 +137,8 @@ It's up to you!
 
 But in the end, you should have at least 2 of these 3 variables configured:
 
-- `HUBOT_SLACK_TOKEN` (mandatory)
+- `HUBOT_SLACK_TOKEN`
+- `HUBOT_DISCORD_TOKEN`
 - `SHEET_TOKEN` (optional)
 - `CLEVERBOT_TOKEN` (optional)
 

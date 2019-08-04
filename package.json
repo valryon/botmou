@@ -18,6 +18,7 @@
   "keywords": [
     "hubot",
     "slack",
+    "discord",
     "google sheets",
     "bot"
   ],
@@ -30,7 +31,8 @@
   },
   "scripts": {
     "start": "hubot --name \"botmou\"",
-    "prod": "hubot --name \"botmou\" --adapter slack",
+    "slack": "hubot --name \"botmou\" --adapter slack",
+    "discord": "hubot --name \"botmou\" --adapter discord",
     "test": "eslint ."
   },
   "prettier": {
@@ -68,14 +70,17 @@
   "dependencies": {
     "cleverbot-node": "^0.3.11",
     "date-fns": "^1.30.1",
+    "generator-hubot": "^0.4.0",
     "google-spreadsheet": "^2.0.7",
     "hubot": "^3.2.0",
     "hubot-auth": "^2.1.0",
     "hubot-diagnostics": "1.0.0",
+    "hubot-discord": "^2.1.0",
     "hubot-help": "^1.0.1",
     "hubot-redis-brain": "1.0.0",
     "hubot-slack": "^4.6.0",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "yo": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^5.12.1",

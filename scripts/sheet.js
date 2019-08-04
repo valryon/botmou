@@ -164,14 +164,17 @@ function answer(robot, row, res) {
   const rawTargetRoom = row.room
   if (isString(rawTargetRoom)) {
     const target = rawTargetRoom.trim().toLowerCase()
-    const roomData = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById(
-      res.message.room
-    )
-    if (roomData) {
-      const roomCleaned = roomData.name.trim().toLowerCase()
 
-      // Stop if not the right channel
-      if (target !== '' && !isEqual(target, roomCleaned)) return false
+    if (robot.adapter.client.rtm) {
+      const roomData = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById(
+        res.message.room
+      )
+      if (roomData) {
+        const roomCleaned = roomData.name.trim().toLowerCase()
+
+        // Stop if not the right channel
+        if (target !== '' && !isEqual(target, roomCleaned)) return false
+      }
     }
   }
 
