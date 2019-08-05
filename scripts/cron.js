@@ -27,7 +27,8 @@ function addTimer(robot, pattern, room, message, desc) {
       robot.messageRoom(room, message)
     },
     null,
-    true
+    true,
+    'Europe/Paris'
   )
 }
 
