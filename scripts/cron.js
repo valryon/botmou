@@ -41,7 +41,7 @@ module.exports = robot => {
     robot,
     Every9amWorkday,
     '#general',
-    'SALUT :krokmou:',
+    'Salut !',
     'Say hi every morning'
   )
   addTimer(
