@@ -217,8 +217,30 @@ function answer(robot, row, res) {
   // And we should have a string at this point.
   if (!isString(message)) return false
 
-  res[row.isReply ? 'reply' : 'send'](message.replace('$USER', rawUser))
+  // If we're sending an emoji, add a 50% chance to have a reaction instead
+  if (new RegExp('^:[a-z0-9]*:$', 'i').exec(message) && random(1) === 1) {
+    message = '+' + message
+  }
+
+  if (message.startsWith('+')) {
+    if (!robot.adapter.client) return
+
+    let reaction = message
+      .replace('+', '')
+      .replace(':', '')
+      .replace(':', '')
+    react(robot, res, reaction)
+  } else {
+    res[row.isReply ? 'reply' : 'send'](message.replace('$USER', rawUser))
+  }
   return true
+}
+
+function react(robot, res, reaction) {
+  robot.adapter.client.web.reactions.add(reaction, {
+    channel: res.message.room,
+    timestamp: res.message.rawMessage.ts
+  })
 }
 
 function makeAnswer(robot, row) {
