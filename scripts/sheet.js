@@ -190,7 +190,7 @@ function answer(robot, row, res) {
       const roomData = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById(
         res.message.room
       )
-      if (roomData) {
+      if (roomData && roomData.name) {
         const roomCleaned = roomData.name.trim().toLowerCase()
 
         // Stop if not the right channel
@@ -295,7 +295,15 @@ module.exports = robot => {
 
       const answer = makeAnswer(robot, row)
 
-      robot.hear(new RegExp(row.regex, 'i'), res => picker(() => answer(res)))
+      robot.hear(new RegExp(row.regex, 'i'), res => {
+        // Ignore if it starts with a report command
+        if (
+          !res.message.rawText.startsWith('/report') &&
+          !res.message.rawText.startsWith('report')
+        ) {
+          picker(() => answer(res))
+        }
+      })
     })
   })
 
