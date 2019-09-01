@@ -66,7 +66,7 @@ function addTimer(robot, pattern, room, message, desc, random = 0) {
   addTimerCallback(pattern, desc, sendMessage, random)
 }
 
-function addTimerDayOfMonth(
+function addTimerDayOfMonth( // eslint-disable-line no-unused-vars
   robot,
   pattern,
   day,
@@ -127,15 +127,5 @@ module.exports = robot => {
     '#general',
     "C'est le week-end :3",
     "Say it's the end of the week"
-  )
-  addTimerDayOfMonth(
-    robot,
-    Every9amWorkday,
-    1,
-    1,
-    '#general',
-    "AUJOURD'HUI ON POSTE DES PHOTOS DE CHATS",
-    '',
-    15 * 60
   )
 }
