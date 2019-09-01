@@ -1,8 +1,9 @@
 // Description:
 //   Moderation tools
 
+/* eslint-disable no-unused-vars */
 const {dm, message} = require('./messaging')
-
+const CHANNEL = '#moderation'
 function reportMessage(robot, user, room, messageTs) {
   let link = 'https://gamedevfr.slack.com/archives/' + room + '/p' + messageTs
   let message =
@@ -21,7 +22,7 @@ function reportMessage(robot, user, room, messageTs) {
 
 function report(robot, user, text) {
   // Alert moderation
-  message(robot, '#bot', text)
+  message(robot, CHANNEL, text)
 
   // Send message to reporting user
   dm(
@@ -32,8 +33,7 @@ function report(robot, user, text) {
 }
 
 module.exports = robot => {
-  dm(robot, '@damien', 'Coucou')
-  message(robot, '#bot', 'Je me connecte !')
+  message(robot, '#krokmou', 'Je me connecte !')
 
   // Watch for :warning:
   robot.hearReaction(res => {
