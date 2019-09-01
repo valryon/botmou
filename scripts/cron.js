@@ -1,6 +1,7 @@
 // Description:
 //   Cron messages for hubot
 
+const _ = require('lodash')
 const Log = require('log')
 const logger = new Log()
 const CronJob = require('cron').CronJob
@@ -18,13 +19,24 @@ var Every7pmFriday = '0 17 * * 5'
 // Helpers.
 // -------------------------------------------------------------
 
-function addTimer(robot, pattern, room, message, desc) {
+function addTimer(robot, pattern, room, message, desc, random = 0) {
   logger.info('Add timer: ' + desc)
   /* eslint-disable no-new */
   new CronJob(
     pattern,
     function() {
-      robot.messageRoom(room, message)
+      var sendMessage = () => robot.messageRoom(room, message)
+
+      var wait = 0
+      if (random > 0) {
+        wait = _.random(0, random, true)
+      }
+
+      if (wait > 0) {
+        setTimeout(sendMessage, wait)
+      } else {
+        sendMessage()
+      }
     },
     null,
     true,
@@ -37,7 +49,7 @@ function addTimer(robot, pattern, room, message, desc) {
 // -------------------------------------------------------------
 
 module.exports = robot => {
-  // addTimer(robot, EverySeconds, '#general', ':krokmou:', 'Very bad test')
+  // addTimer(robot, EverySeconds, '#bot', ':krokmou:', 'Very bad test')
   addTimer(
     robot,
     Every9amWorkday,
