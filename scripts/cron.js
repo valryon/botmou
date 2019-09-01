@@ -14,28 +14,92 @@ const CronJob = require('cron').CronJob
 // var EverySeconds = '* * * * * *'
 var Every9amWorkday = '0 9 * * 1-5'
 var Every7pmFriday = '0 17 * * 5'
+// var Every1030amMonday = '30 10 * * 1'
+// var Every1030amWednesday = '30 10 * * 3'
 
 // -------------------------------------------------------------
 // Helpers.
 // -------------------------------------------------------------
 
+// Check if we're the first given day (ex: monday) of the month
+function isDayOfMonth(day, dayCount) {
+  var days = getDays(day)
+  var today = new Date()
+
+  // Check if current day is in array with index == dayCount
+  for (let index = 0; index < days.length; index++) {
+    const d = days[index]
+    if (d.month === today.month && d.day === today.day) {
+      return dayCount === index + 1
+    }
+  }
+  return false
+}
+
+// Returns an array with all given days (ex: mondays) of the current month
+// @param day [0, 6]
+function getDays(day) {
+  day = Math.min(Math.max(0, day), 6)
+
+  var d = new Date()
+  var month = d.getMonth()
+  var days = []
+
+  d.setDate(1)
+
+  // Get the first requested day in the month
+  while (d.getDay() !== day) {
+    d.setDate(d.getDate() + 1)
+  }
+
+  // Get all the other given day in the month
+  while (d.getMonth() === month) {
+    days.push(new Date(d.getTime()))
+    d.setDate(d.getDate() + 7)
+  }
+
+  return days
+}
+
 function addTimer(robot, pattern, room, message, desc, random = 0) {
+  var sendMessage = () => robot.messageRoom(room, message)
+  addTimerCallback(pattern, desc, sendMessage, random)
+}
+
+function addTimerDayOfMonth(
+  robot,
+  pattern,
+  day,
+  dayNumber,
+  room,
+  message,
+  desc,
+  random = 0
+) {
+  var sendMessage = () => {
+    if (isDayOfMonth(day, dayNumber)) {
+      robot.messageRoom(room, message)
+    }
+  }
+  addTimerCallback(pattern, desc, sendMessage, random)
+}
+
+// @param random = seconds
+function addTimerCallback(pattern, desc, callback, random = 0) {
   logger.info('Add timer: ' + desc)
   /* eslint-disable no-new */
   new CronJob(
     pattern,
     function() {
-      var sendMessage = () => robot.messageRoom(room, message)
-
       var wait = 0
       if (random > 0) {
         wait = _.random(0, random, true)
       }
 
       if (wait > 0) {
-        setTimeout(sendMessage, wait)
+        setTimeout(callback, wait * 1000)
       } else {
-        sendMessage()
+        callback()
       }
     },
     null,
@@ -54,7 +118,7 @@ module.exports = robot => {
     robot,
     Every9amWorkday,
     '#general',
-    'SALUT :krokmou:',
+    'Salut !',
     'Say hi every morning'
   )
   addTimer(
@@ -63,5 +127,15 @@ module.exports = robot => {
     '#general',
     "C'est le week-end :3",
     "Say it's the end of the week"
+  )
+  addTimerDayOfMonth(
+    robot,
+    Every9amWorkday,
+    1,
+    1,
+    '#general',
+    "AUJOURD'HUI ON POSTE DES PHOTOS DE CHATS",
+    '',
+    15 * 60
   )
 }
