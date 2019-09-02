@@ -3,37 +3,48 @@
 
 /* eslint-disable no-unused-vars */
 const {dm, message} = require('./messaging')
-const CHANNEL = '#moderation'
+const CHANNEL_GREETING = '#krokmou'
+const CHANNEL_REPORT = '#moderation'
 function reportMessage(robot, user, room, messageTs) {
-  let link = 'https://gamedevfr.slack.com/archives/' + room + '/p' + messageTs
+  let link =
+    'https://gamedevfr.slack.com/archives/' +
+    room +
+    '/p' +
+    messageTs.replace('.', '')
   let message =
     ':warning: *' +
     user +
-    '* a signalé le post ' +
+    '* a signalé le post \n' +
     link +
     ' \nMerci de jeter un oeil et de discuter avec *' +
     user +
     '* (qui a reçu un MP de confirmation) et le(s) auteur(s) du post si besoin.'
 
   report(robot, user, message)
-
-  // TODO send message to reported user?
 }
 
 function report(robot, user, text) {
   // Alert moderation
-  message(robot, CHANNEL, text)
+  message(robot, CHANNEL_REPORT, text)
 
   // Send message to reporting user
   dm(
     robot,
     user,
-    "Bonjour, votre signalement a bien été transmis à l'équipe de modération qui reviendra vers vous rapidement. Merci."
+    "Bonjour,\nvotre signalement a bien été transmis à l'équipe de modération qui reviendra vers vous rapidement.\nMerci."
   )
 }
 
+function cleanReport(rawText) {
+  let text = rawText.replace('@Frank_Parquet report ', '')
+  text = text.replace('Frank_Parquet report ', '')
+  text = text.replace('report ', '')
+
+  return text
+}
+
 module.exports = robot => {
-  message(robot, '#krokmou', 'Je me connecte !')
+  message(robot, CHANNEL_GREETING, 'Je me connecte !')
 
   // Watch for :warning:
   robot.hearReaction(res => {
@@ -55,7 +66,7 @@ module.exports = robot => {
       '*' +
       res.message.user.name +
       '* a envoyé un signalement : \n' +
-      res.message.rawText
+      cleanReport(res.message.rawText)
     report(robot, res.message.user.name, message)
   })
 }
