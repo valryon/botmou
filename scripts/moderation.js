@@ -49,7 +49,10 @@ module.exports = robot => {
   // Watch for :warning:
   robot.hearReaction(res => {
     if (res.message.type === 'added') {
-      if (res.message.reaction === 'warning') {
+      if (
+        res.message.reaction === 'warning' ||
+        res.message.reaction === 'exclamation'
+      ) {
         var reportingUser = res.message.user.name
         var messageTs = res.message.item.ts
         var room = res.message.item.channel
