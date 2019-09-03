@@ -66,7 +66,8 @@ function addTimer(robot, pattern, room, message, desc, random = 0) {
   addTimerCallback(pattern, desc, sendMessage, random)
 }
 
-function addTimerDayOfMonth( // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+function addTimerDayOfMonth(
   robot,
   pattern,
   day,
