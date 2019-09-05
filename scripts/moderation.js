@@ -14,7 +14,7 @@ function sendWarningMessage(robot, user, room, messageTs) {
     room +
     '/p' +
     messageTs.replace('.', '')
-  let text = EMOJI_CW + ' *' + link + ' par *' + user + '*'
+  let text = ':' + EMOJI_CW + ': *' + link + ' par *' + user + '*'
 
   // Alert moderation
   message(robot, CHANNEL_REPORT, text)
@@ -27,8 +27,9 @@ function sendReportMessage(robot, user, room, messageTs) {
     '/p' +
     messageTs.replace('.', '')
   let text =
+    ':' +
     EMOJI_REPORT +
-    ' *' +
+    ': *' +
     user +
     '* a signalé le post \n' +
     link +
