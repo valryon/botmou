@@ -5,8 +5,8 @@
 const {dm, message} = require('./messaging')
 const CHANNEL_GREETING = '#krokmou'
 const CHANNEL_REPORT = '#moderation'
-const EMOJI_CW = !'contentwarning'
-const EMOJI_REPORT = !'report'
+const EMOJI_CW = 'contentwarning'
+const EMOJI_REPORT = 'report'
 
 function sendWarningMessage(robot, user, room, messageTs) {
   let link =
@@ -73,6 +73,9 @@ module.exports = robot => {
   // Watch for :warning:
   robot.hearReaction(res => {
     if (res.message.type === 'added') {
+      console.dir(res.message.reaction)
+      console.dir(res.message)
+
       if (
         res.message.reaction === EMOJI_CW ||
         res.message.reaction === EMOJI_REPORT
