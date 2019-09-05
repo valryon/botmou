@@ -5,14 +5,30 @@
 const {dm, message} = require('./messaging')
 const CHANNEL_GREETING = '#krokmou'
 const CHANNEL_REPORT = '#moderation'
-function reportMessage(robot, user, room, messageTs) {
+const EMOJI_CW = !'contentwarning'
+const EMOJI_REPORT = !'report'
+
+function sendWarningMessage(robot, user, room, messageTs) {
   let link =
     'https://gamedevfr.slack.com/archives/' +
     room +
     '/p' +
     messageTs.replace('.', '')
-  let message =
-    ':warning: *' +
+  let text = EMOJI_CW + ' *' + link + ' par *' + user + '*'
+
+  // Alert moderation
+  message(robot, CHANNEL_REPORT, text)
+}
+
+function sendReportMessage(robot, user, room, messageTs) {
+  let link =
+    'https://gamedevfr.slack.com/archives/' +
+    room +
+    '/p' +
+    messageTs.replace('.', '')
+  let text =
+    EMOJI_REPORT +
+    ' *' +
     user +
     '* a signalé le post \n' +
     link +
@@ -20,10 +36,6 @@ function reportMessage(robot, user, room, messageTs) {
     user +
     '* (qui a reçu un MP de confirmation) et le(s) auteur(s) du post si besoin.'
 
-  report(robot, user, message)
-}
-
-function report(robot, user, text) {
   // Alert moderation
   message(robot, CHANNEL_REPORT, text)
 
@@ -43,6 +55,18 @@ function cleanReport(rawText) {
   return text
 }
 
+function report(robot, user, text) {
+  // Alert moderation
+  message(robot, CHANNEL_REPORT, text)
+
+  // Send message to reporting user
+  dm(
+    robot,
+    user,
+    "Bonjour,\nvotre message a bien été transmis à l'équipe de modération qui reviendra vers vous rapidement.\nMerci."
+  )
+}
+
 module.exports = robot => {
   message(robot, CHANNEL_GREETING, 'Je me connecte !')
 
@@ -50,14 +74,18 @@ module.exports = robot => {
   robot.hearReaction(res => {
     if (res.message.type === 'added') {
       if (
-        res.message.reaction === 'warning' ||
-        res.message.reaction === 'exclamation'
+        res.message.reaction === EMOJI_CW ||
+        res.message.reaction === EMOJI_REPORT
       ) {
         var reportingUser = res.message.user.name
         var messageTs = res.message.item.ts
         var room = res.message.item.channel
 
-        reportMessage(robot, reportingUser, room, messageTs)
+        if (res.message.reaction === EMOJI_CW) {
+          sendWarningMessage(robot, reportingUser, room, messageTs)
+        } else if (res.message.reaction === EMOJI_REPORT) {
+          sendReportMessage(robot, reportingUser, room, messageTs)
+        }
       }
     }
   })
@@ -65,11 +93,11 @@ module.exports = robot => {
   // Listen to /report
   const REGEX = /report (\S*)/i
   robot.respond(REGEX, res => {
-    let message =
+    let text =
       '*' +
       res.message.user.name +
       '* a envoyé un signalement : \n' +
       cleanReport(res.message.rawText)
-    report(robot, res.message.user.name, message)
+    report(robot, res.message.user.name, text)
   })
 }
