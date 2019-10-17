@@ -293,9 +293,13 @@ module.exports = robot => {
       if (!isString(row.regex)) return
       if (row.regex.trim() === '') return
 
-      const answer = makeAnswer(robot, row)
-
-      robot.hear(new RegExp(row.regex, 'i'), res => picker(() => answer(res)))
+      try {
+        const answer = makeAnswer(robot, row)
+        let regex = new RegExp(row.regex, 'i')
+        robot.hear(regex, res => picker(() => answer(res)))
+      } catch (e) {
+        logger.error('Cannot create RegEx for ' + row.regex + ':\n' + e)
+      }
     })
   })
 
