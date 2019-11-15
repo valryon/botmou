@@ -293,17 +293,21 @@ module.exports = robot => {
       if (!isString(row.regex)) return
       if (row.regex.trim() === '') return
 
-      const answer = makeAnswer(robot, row)
+      try {
+        const answer = makeAnswer(robot, row)
 
-      robot.hear(new RegExp(row.regex, 'i'), res => {
-        // Ignore if it starts with a report command
-        if (
-          !res.message.rawText.startsWith('/report') &&
-          !res.message.rawText.startsWith('report')
-        ) {
-          picker(() => answer(res))
-        }
-      })
+        robot.hear(new RegExp(row.regex, 'i'), res => {
+          // Ignore if it starts with a report command
+          if (
+            !res.message.rawText.startsWith('/report') &&
+            !res.message.rawText.startsWith('report')
+          ) {
+            picker(() => answer(res))
+          }
+        })
+      } catch (e) {
+        logger.error('Cannot create RegEx for ' + row.regex + ':\n' + e)
+      }
     })
   })
 
