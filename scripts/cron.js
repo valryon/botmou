@@ -13,9 +13,11 @@ const CronJob = require('cron').CronJob
 // Use https://crontab.guru/ for help
 // var EverySeconds = '* * * * * *'
 var Every9amWorkday = '0 9 * * 1-5'
+var Every9am01Workday = '0 9 * * 1'
 var Every4pmFriday = '0 16 * * 5'
 var Every6pmFriday = '30 18 * * 5'
-// var Every1030amMonday = '30 10 * * 1'
+var EveryChristmasEve = '00 19 24 12 *'
+var EveryNewYear = '00 11 01 01 *'
 // var Every1030amWednesday = '30 10 * * 3'
 
 // -------------------------------------------------------------
@@ -125,6 +127,13 @@ module.exports = robot => {
   )
   addTimer(
     robot,
+    Every9am01Workday,
+    '#general',
+    "C'est lundi, c'est reparti !",
+    'Lundi'
+  )
+  addTimer(
+    robot,
     Every4pmFriday,
     '#general',
     "C'est PRESQUE le week-end :whistle: ",
@@ -134,7 +143,21 @@ module.exports = robot => {
     robot,
     Every6pmFriday,
     '#general',
-    ":ah1: C'est officiellement et véritablement le week-end !!! :ah1:",
+    ":tada: C'est officiellement et véritablement le week-end !!! :heart:",
     "Say it's the end of the week"
+  )
+  addTimer(
+    robot,
+    EveryChristmasEve,
+    '#general',
+    ':santa: Joyeux Noël !!! :santa: ',
+    'Noël'
+  )
+  addTimer(
+    robot,
+    EveryNewYear,
+    '#general',
+    ':heart: Bonne année à tous :heart:',
+    'Nouvel an'
   )
 }
