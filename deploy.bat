@@ -6,8 +6,8 @@ git archive --format zip --output ./gdfr.zip gdfr
 
 echo "Uploading"
 
-scp -r botmou.zip root@odin:/tmp
-scp -r gdfr.zip root@odin:/tmp
+scp -r botmou.zip valryon@proto.headbang.club:/tmp
+scp -r gdfr.zip valryon@proto.headbang.club:/tmp
 
 echo "Cleaning"
 
