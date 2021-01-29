@@ -8,8 +8,8 @@ const {
   partial,
   random,
   isFunction,
-  isString,
-  isEqual
+  isString
+  // isEqual
 } = require('lodash')
 const {addMinutes, isAfter} = require('date-fns')
 const GoogleSpreadsheet = require('google-spreadsheet')
@@ -180,36 +180,17 @@ function answer(robot, row, res) {
   const room = res.message.room
   if (isBlacklisted(room)) return false
 
-  // Check if the row is supposed to target only a specific room
-  // Ignore if "room" cell is empty
-  const rawTargetRoom = row.room
-  if (isString(rawTargetRoom)) {
-    const target = rawTargetRoom.trim().toLowerCase()
-
-    if (robot.adapter.client.rtm) {
-      const roomData = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById(
-        res.message.room
-      )
-      if (roomData) {
-        const roomCleaned = roomData.name.trim().toLowerCase()
-
-        // Stop if not the right channel
-        if (target !== '' && !isEqual(target, roomCleaned)) return false
-      }
-    }
-  }
-
   // Get target and user.
-  const rawTarget = row.target
+  // const rawTarget = row.target
   const rawUser = res.message.user.name
-  if (isString(rawTarget) && isString(rawUser)) {
-    const target = rawTarget.trim().toLowerCase()
-    const user = rawUser.trim().toLowerCase()
+  // if (isString(rawTarget) && isString(rawUser)) {
+  //   const target = rawTarget.trim().toLowerCase()
+  //   const user = rawUser.trim().toLowerCase()
 
-    // Stop if the user is not the target.
-    // If the target is empty, ignore this condition.
-    if (target !== '' && !isEqual(target, user)) return false
-  }
+  //   // Stop if the user is not the target.
+  //   // If the target is empty, ignore this condition.
+  //   if (target !== '' && !isEqual(target, user)) return false
+  // }
 
   // Unlucky draw?
   if (isUnsuccessfulDraw(row.probability)) return false

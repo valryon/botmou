@@ -47,6 +47,7 @@ module.exports = robot => {
 
   // Respond to `botname:{message}`.
   robot.respond(/:(.*)/i, res => {
+    console.log('cleverbot: ' + res.match[1])
     const data = res.match[1].trim()
 
     cleverbot.write(data, cleverResponse => {
