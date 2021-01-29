@@ -33,6 +33,7 @@
     "start": "hubot --name \"botmou\"",
     "slack": "hubot --name \"botmou\" --adapter slack",
     "discord": "hubot --name \"botmou\" --adapter discord",
+    "telegram": "hubot --name \"botmou\" --adapter telegram",
     "test": "eslint ."
   },
   "prettier": {
@@ -80,6 +81,7 @@
     "hubot-help": "^1.0.1",
     "hubot-redis-brain": "1.0.0",
     "hubot-slack": "^4.6.0",
+    "hubot-telegram": "^1.2.0",
     "lodash": "^4.17.11",
     "yo": "^3.1.0"
   },
